@@ -1,0 +1,5 @@
+{
+    "require": {
+        "b-b3rn4rd/phplame": "dev-master"
+    }
+}
