@@ -4,10 +4,12 @@
 
 FROM php:apache
 
+# Working directory is set by parent image
+
 # add non-free repository for dependencies
 RUN sed -i "s/jessie main/jessie main contrib non-free/" /etc/apt/sources.list
 
-# install setup & tts dependencies
+# install runtime dependencies
 RUN apt-get update && apt-get install -y \
 		libttspico0 \
 		libttspico-utils \
@@ -15,17 +17,22 @@ RUN apt-get update && apt-get install -y \
 		libttspico-data \
 		lame \
 		curl \
-		git \
 	--no-install-recommends && rm -r /var/lib/apt/lists/*
 
-# add php composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
 # install source
-COPY composer.json /var/www/html/
-COPY tts.php /var/www/html/
+COPY composer.json .
+COPY tts.php .
 
-# run composer to install php tts requirements
-RUN composer install
+# install build dependencies and setup
+RUN set -xe \
+	&& buildDeps=" \
+		git-core \
+	" \
+	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends && rm -rf /var/lib/apt/lists/* \
+	\
+	&& curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+	&& composer install \
+	\
+	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $buildDeps
 
 CMD ["apache2-foreground"]
