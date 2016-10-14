@@ -2,7 +2,7 @@
 # Text-To-Speech (TTS) server found here:
 # https://github.com/openhab/openhab/wiki/Use-local-TTS-with-squeezebox
 
-FROM php:apache
+FROM armv7/armhf-php:apache
 
 # Working directory is set by parent image
 
@@ -20,8 +20,7 @@ RUN apt-get update && apt-get install -y \
 	--no-install-recommends && rm -r /var/lib/apt/lists/*
 
 # install source
-COPY composer.json .
-COPY tts.php .
+COPY src/ .
 
 # install build dependencies and setup
 RUN set -xe \
