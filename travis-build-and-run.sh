@@ -2,6 +2,9 @@
 # Based on a test script from avsm/ocaml repo https://github.com/avsm/ocaml
 # Based on the script from https://www.tomaz.me/2013/12/02/running-travis-ci-tests-on-arm.html
 
+ARCH="${ARCH:?The environment variable 'ARCH' must be set and non-empty}"
+echo "Architecture: ${ARCH}"
+
 CHROOT_DIR=/tmp/arm-chroot
 MIRROR=http://archive.raspbian.org/raspbian
 VERSION=jessie
