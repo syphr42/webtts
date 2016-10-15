@@ -10,7 +10,7 @@ services:
   - docker
 
 before_install:
-  - ./test-env-setup.sh
+  - ./travis-build-and-run.sh
 
 script:
   - export TEST_HOST=127.0.0.1 && ./test.sh
