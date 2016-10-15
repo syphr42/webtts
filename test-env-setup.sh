@@ -13,10 +13,6 @@ HOST_DEPENDENCIES="debootstrap qemu-user-static binfmt-support sbuild"
 # Debian package dependencies for the chrooted environment
 GUEST_DEPENDENCIES="sudo curl"
 
-# Command used to run the tests
-#TEST_COMMAND="docker build -t syphr/webtts:$ARCH -f Dockerfile.$ARCH && docker run -d -p 127.0.0.1:80:80 syphr/webtts:$ARCH"
-TEST_COMMAND="echo $ARCH"
-
 function setup_arm_chroot {
     # Host dependencies
     sudo apt-get install -qq -y ${HOST_DEPENDENCIES}
@@ -40,7 +36,8 @@ function setup_arm_chroot {
     sudo chroot ${CHROOT_DIR} apt-get update
     sudo chroot ${CHROOT_DIR} apt-get --allow-unauthenticated install \
         -qq -y ${GUEST_DEPENDENCIES}
-    sudo chroot ${CHROOT_DIR} curl -sSL https://get.docker.com/ | sh
+    # Using Docker testing due to hash mismatch error for armhf on stable
+    sudo chroot ${CHROOT_DIR} curl -sSL https://test.docker.com/ | sudo chroot ${CHROOT_DIR} sh
 
     # Create build dir and copy travis build files to our chroot environment
     sudo mkdir -p ${CHROOT_DIR}/${TRAVIS_BUILD_DIR}
@@ -56,17 +53,17 @@ function setup_arm_chroot {
 if [ -e "/.chroot_is_done" ]; then
   # We are inside ARM chroot
   echo "Running inside chrooted environment"
-
   . ./envvars.sh
 else
   if [ "${ARCH}" = "armhf" ]; then
-    # ARM test run, need to set up chrooted environment first
+    # ARM test run, need to set up chrooted environment and execute self
     echo "Setting up chrooted ARM environment"
     setup_arm_chroot
+    exit 0
   fi
 fi
 
 echo "Running tests"
 echo "Environment: $(uname -a)"
 
-${TEST_COMMAND}
+sudo docker build -t syphr/webtts:${ARCH} -f Dockerfile.${ARCH} && sudo docker run -d -p 127.0.0.1:80:80 syphr/webtts:${ARCH}

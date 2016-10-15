@@ -16,12 +16,10 @@ before_install:
 script:
   - export TEST_HOST=127.0.0.1 && ./test.sh
 
-after_script:
-  - docker images
-
-after_success:
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then
-    docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    docker push syphr/webtts:$ARCH;
-    fi
+# Disabled automatic deployment - needs work for armhf image
+#after_success:
+#  - if [ "$TRAVIS_BRANCH" == "master" ]; then
+#    docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+#    docker push syphr/webtts:$ARCH;
+#    fi
 
