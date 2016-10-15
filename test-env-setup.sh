@@ -66,4 +66,4 @@ fi
 echo "Running tests"
 echo "Environment: $(uname -a)"
 
-sudo docker build -t syphr/webtts:${ARCH} -f Dockerfile.${ARCH} && sudo docker run -d -p 127.0.0.1:80:80 syphr/webtts:${ARCH}
+sudo docker build -t syphr/webtts:${ARCH} -f Dockerfile.${ARCH} . && sudo docker run -d -p 127.0.0.1:80:80 syphr/webtts:${ARCH}
