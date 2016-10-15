@@ -2,10 +2,9 @@ sudo: required
 
 language: bash
 
-matrix:
-  include:
-    - env: ARCH=amd64
-    - env: ARCH=armhf
+env:
+  - ARCH=amd64
+  - ARCH=armhf
 
 services:
   - docker
