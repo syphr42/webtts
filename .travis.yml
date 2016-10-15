@@ -2,13 +2,16 @@ sudo: required
 
 language: bash
 
+matrix:
+  include:
+    - env: ARCH=amd64
+    - env: ARCH=armhf
+
 services:
   - docker
 
 before_install:
-  - docker build -t syphr/webtts:amd64 -f Dockerfile.amd64 .
-  - docker run -d -p 127.0.0.1:80:80 syphr/webtts:amd64
-  - docker ps -a
+  - ./test-env-setup.sh
 
 script:
   - export TEST_HOST=127.0.0.1 && ./test.sh
@@ -19,6 +22,6 @@ after_script:
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
     docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    docker push syphr/webtts:amd64;
+    docker push syphr/webtts:$ARCH;
     fi
 
