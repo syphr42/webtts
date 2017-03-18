@@ -3,19 +3,17 @@ sudo: required
 language: bash
 
 env:
-  - ARCH=amd64
+#  - ARCH=amd64
   - ARCH=armhf
 
 services:
   - docker
 
-before_install:
+script:
   - if [[ "$ARCH" != "amd64" ]]; then docker run --rm --privileged multiarch/qemu-user-static:register --reset; fi
   - docker build -t syphr/webtts:${ARCH} -f Dockerfile.${ARCH} .
   - docker run -d -p 127.0.0.1:80:80 syphr/webtts:${ARCH}
   - docker ps
-
-script:
   - export TEST_HOST=127.0.0.1 && ./test.sh
 
 after_success:
