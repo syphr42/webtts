@@ -4,21 +4,23 @@ language: bash
 
 env:
   - ARCH=amd64
-#  - ARCH=armhf
+  - ARCH=armhf
 
 services:
   - docker
 
 before_install:
-  - ./travis-build-and-run.sh
+  - if [[ "$ARCH" != "amd64" ]]; then docker run --rm --privileged multiarch/qemu-user-static:register --reset; fi
+  - docker build -t syphr/webtts:${ARCH} -f Dockerfile.${ARCH} .
+  - docker run -d -p 127.0.0.1:80:80 syphr/webtts:${ARCH}
+  - docker ps
 
 script:
   - export TEST_HOST=127.0.0.1 && ./test.sh
 
-# Automatic deployment does not work for armhf build (chroot is required)
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
     docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    docker push syphr/webtts:$ARCH;
+    docker push syphr/webtts:${ARCH};
     fi
 
