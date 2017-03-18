@@ -3,17 +3,24 @@ sudo: required
 language: bash
 
 env:
-#  - ARCH=amd64
+  - ARCH=amd64
   - ARCH=armhf
 
 services:
   - docker
 
-script:
-  - if [[ "$ARCH" != "amd64" ]]; then docker run --rm --privileged multiarch/qemu-user-static:register --reset; fi
+before_install:
+  - if [[ "$ARCH" != "amd64" ]]; then 
+    sudo apt-get install -y --no-install-recommends qemu-user-static binfmt-support
+    sudo update-binfmts --display qemu-arm
+    fi
+  
+install:
   - docker build -t syphr/webtts:${ARCH} -f Dockerfile.${ARCH} .
   - docker run -d -p 127.0.0.1:80:80 syphr/webtts:${ARCH}
   - docker ps
+
+script:
   - export TEST_HOST=127.0.0.1 && ./test.sh
 
 after_success:
