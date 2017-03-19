@@ -12,9 +12,9 @@ services:
 before_install:
   - if [ "${ARCH}" = "armhf" ]; then
       ./setup-chroot-armhf.sh;
-      sudo chroot ${CHROOT_DIR} echo "Environment: $(uname -a)";
+      sudo chroot ${CHROOT_DIR} echo "Environment - $(uname -a)";
     else
-      echo "Environment: $(uname -a)";
+      echo "Environment - $(uname -a)";
     fi
 
 install:
