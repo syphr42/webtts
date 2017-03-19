@@ -11,8 +11,8 @@ services:
 
 before_install:
   - if [[ "$ARCH" != "amd64" ]]; then 
-    sudo apt-get install -y --no-install-recommends qemu-user-static binfmt-support
-    sudo update-binfmts --display qemu-arm
+    sudo apt-get install -y --no-install-recommends qemu-user-static binfmt-support;
+    sudo update-binfmts --display qemu-arm;
     fi
   
 install:
