@@ -2,6 +2,8 @@
 # Based on a test script from avsm/ocaml repo https://github.com/avsm/ocaml
 # Based on the script from https://www.tomaz.me/2013/12/02/running-travis-ci-tests-on-arm.html
 
+set -xeuo pipefail
+
 MIRROR=http://archive.raspbian.org/raspbian
 VERSION=jessie
 CHROOT_ARCH=armhf
