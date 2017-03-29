@@ -34,4 +34,11 @@ RUN set -xe \
 	\
 	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $buildDeps
 
+# setup port number so that it can be defined at build or run time
+# UNEXPOSE 80 from the parent image when that is available (https://github.com/docker/docker/issues/3465)
+ARG PORT=80
+ENV PORT ${PORT}
+RUN sed -i 's/Listen\ 80/Listen\ ${PORT}/g' /etc/apache2/ports.conf
+EXPOSE ${PORT}
+
 CMD ["apache2-foreground"]
