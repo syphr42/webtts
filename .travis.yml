@@ -29,6 +29,8 @@ install:
     fi
 
 script:
+  # sleep to attempt workaround for failing test
+  - sleep 15
   - export TEST_HOST=127.0.0.1 && ./test.sh
 
 after_success:
