@@ -2,22 +2,23 @@
 # Text-To-Speech (TTS) server found here:
 # https://github.com/openhab/openhab/wiki/Use-local-TTS-with-squeezebox
 
-FROM php:apache
+ARG ARCH=
+FROM ${ARCH}php:8-apache
 
 # Working directory is set by parent image
 
 # add non-free repository for dependencies
-RUN sed -i "s/jessie main/jessie main contrib non-free/" /etc/apt/sources.list
+RUN . /etc/os-release && sed -i "s/${VERSION_CODENAME} main/${VERSION_CODENAME} main contrib non-free/" /etc/apt/sources.list
 
 # install runtime dependencies
-RUN apt-get update && apt-get install -y \
-		libttspico0 \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+		curl \
+		lame \
 		libttspico-utils \
 		libttspico-dev \
 		libttspico-data \
-		lame \
-		curl \
-	--no-install-recommends && rm -r /var/lib/apt/lists/*
+		libttspico0 \
+ && rm -r /var/lib/apt/lists/*
 
 # install source
 COPY src/ .
@@ -33,12 +34,3 @@ RUN set -xe \
 	&& composer install \
 	\
 	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $buildDeps
-
-# setup port number so that it can be defined at build or run time
-# UNEXPOSE 80 from the parent image when that is available (https://github.com/docker/docker/issues/3465)
-ARG PORT=80
-ENV PORT ${PORT}
-RUN sed -i 's/Listen\ 80/Listen\ ${PORT}/g' /etc/apache2/ports.conf
-EXPOSE ${PORT}
-
-CMD ["apache2-foreground"]
