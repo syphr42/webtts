@@ -3,7 +3,7 @@
 # Supported tags and respective `Dockerfile` links
 
 - [`dev` (*Dockerfile*)](https://github.com/syphr42/webtts/blob/master/Dockerfile)
-- [`1.0.0`, `latest` (*Dockerfile*)](https://github.com/syphr42/webtts/blob/v1.0.0/Dockerfile)
+- [`1.1.0`, `latest` (*Dockerfile*)](https://github.com/syphr42/webtts/blob/v1.1.0/Dockerfile)
 
 # What is WebTTS?
 WebTTS is an Apache-based webserver running a small PHP script to access the Pico Text-To-Speech (TTS) engine for generating sound files from text. It can be useful for home automation systems or any application where speech feedback is required via a local web service.
