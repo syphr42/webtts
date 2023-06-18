@@ -2,10 +2,7 @@ name: build-images
 
 on:
   schedule:
-    - cron: '0 4 * * *' # everyday at 4am
-  push:
-    branches:
-      - main
+    - cron: '10 4 * * 0' # Sundays at 4:10am
 
 jobs:
   build-1:
@@ -30,30 +27,6 @@ jobs:
           docker build \
             --tag syphr/webtts:1.1.0 \
             --tag syphr/webtts:latest \
-            --platform linux/amd64,linux/arm/v7,linux/arm64 \
-            --push \
-            .
-      - name: Cleanup
-        run: rm -f ${HOME}/.docker/config.json
-  build-dev:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      - name: Setup Docker buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
-        with:
-          version: latest
-          install: true
-      - name: Login to Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-      - name: Build images
-        run: |
-          docker build \
-            --tag syphr/webtts:dev \
             --platform linux/amd64,linux/arm/v7,linux/arm64 \
             --push \
             .
