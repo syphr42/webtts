@@ -2,13 +2,12 @@
 # Text-To-Speech (TTS) server found here:
 # https://github.com/openhab/openhab/wiki/Use-local-TTS-with-squeezebox
 
-ARG ARCH=
-FROM ${ARCH}php:8-apache
+FROM php:8-apache
 
 # Working directory is set by parent image
 
 # add non-free repository for dependencies
-RUN . /etc/os-release && sed -i "s/${VERSION_CODENAME} main/${VERSION_CODENAME} main contrib non-free/" /etc/apt/sources.list
+RUN sed -ie 's/^Components:\s\+main\s*$/Components: main contrib non-free/' /etc/apt/sources.list.d/debian.sources
 
 # install runtime dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
