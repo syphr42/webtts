@@ -1,4 +1,4 @@
-name: build-images
+name: build-v1
 
 on:
   schedule:
